@@ -7,47 +7,59 @@
 </head>
 <body>
 
-<div class="chat-container">
+<div class="chat-wrapper">
+  <div class="chat-container">
+
     <div class="chat-header">
-        🤖 Teste de Turing
+      Bate-Papo
     </div>
 
     <div id="chat" class="chat-box"></div>
 
     <div class="input-area">
-        <input id="msg" type="text" placeholder="Digite sua mensagem..." />
-        <button onclick="enviar()">Enviar</button>
+      <input id="msg" type="text" placeholder="Mensagem..." />
+      <button onclick="enviar()">➤</button>
     </div>
+
+  </div>
 </div>
 
 <script>
 async function iniciar() {
-    await fetch("http://localhost:8080/start");
+  await fetch("http://localhost:8080/start");
 }
 iniciar();
 
 async function enviar() {
-    const input = document.getElementById("msg");
-    const texto = input.value.trim();
-    if (!texto) return;
+  const input = document.getElementById("msg");
+  const texto = input.value.trim();
+  if (!texto) return;
 
-    adicionar("Você", texto);
-    input.value = "";
+  adicionar("user", texto);
+  input.value = "";
 
-    const res = await fetch("http://localhost:8080/chat", {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: texto
-    });
+  const res = await fetch("http://localhost:8080/chat", {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: texto
+  });
 
-    const resposta = await res.text();
-    adicionar("Pessoa", resposta);
+  const resposta = await res.text();
+  adicionar("bot", resposta);
 }
 
-function adicionar(autor, texto) {
-    const chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="msg ${autor}"><b>${autor}:</b> ${texto}</div>`;
-    chat.scrollTop = chat.scrollHeight;
+function adicionar(tipo, texto) {
+  const chat = document.getElementById("chat");
+
+  chat.innerHTML += `
+    <div class="message ${tipo}">
+      <div class="bubble">
+        ${texto}
+      </div>
+    </div>
+  `;
+
+  chat.scrollTop = chat.scrollHeight;
 }
 </script>
 
